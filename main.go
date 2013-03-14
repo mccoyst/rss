@@ -7,6 +7,7 @@ import (
 	"os"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/zippoxer/RSS-Go"
 )
@@ -56,7 +57,7 @@ func showFeed(s string) {
 	os.Stdout.WriteString(feed.Title+"\n")
 	os.Stdout.WriteString(feed.Link+"\n")
 	for _, i := range feed.Items {
-		os.Stdout.WriteString("\t"+i.Title+"\n")
+		os.Stdout.WriteString("\t"+strings.Replace(i.Title, "\n", " ", -1)+"\n")
 		os.Stdout.WriteString("\t\t"+i.Link+"\n")
 	}
 }
