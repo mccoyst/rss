@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"flag"
+	"io/ioutil"
 	"os"
 	"net/http"
 	"net/url"
@@ -9,15 +11,39 @@ import (
 	"github.com/zippoxer/RSS-Go"
 )
 
+var feeds = flag.String("f", "", "file containing a list of feeds")
+
 func main() {
 	flag.Parse()
 
-	if flag.NArg() == 0 {
-		os.Stderr.WriteString("I need the URL.\n")
+	if flag.NArg() == 0 && *feeds == "" {
+		os.Stderr.WriteString("I need the feed URL.\n")
 		os.Exit(1)
 	}
 
-	url, err := url.Parse(flag.Arg(0))
+	lines := [][]byte{ []byte(flag.Arg(0)) }
+
+	if *feeds != "" {
+		f, err := os.Open(*feeds)
+		maybeDie(err)
+
+		data, err := ioutil.ReadAll(f)
+		f.Close()
+		maybeDie(err)
+
+		lines = bytes.Split(data, []byte{'\n'})
+	}
+
+	for _, line := range lines {
+		if len(line) == 0 { continue }
+
+		showFeed(string(line))
+		os.Stdout.WriteString("\n")
+	}
+}
+
+func showFeed(s string) {
+	url, err := url.Parse(s)
 	maybeDie(err)
 
 	resp, err := http.Get(url.String())
