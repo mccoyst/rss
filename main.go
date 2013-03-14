@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"flag"
 	"io/ioutil"
-	"os"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/zippoxer/RSS-Go"
@@ -22,7 +22,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	lines := [][]byte{ []byte(flag.Arg(0)) }
+	lines := [][]byte{[]byte(flag.Arg(0))}
 
 	if *feeds != "" {
 		f, err := os.Open(*feeds)
@@ -36,7 +36,9 @@ func main() {
 	}
 
 	for _, line := range lines {
-		if len(line) == 0 { continue }
+		if len(line) == 0 {
+			continue
+		}
 
 		showFeed(string(line))
 		os.Stdout.WriteString("\n")
@@ -54,11 +56,11 @@ func showFeed(s string) {
 	feed, err := rss.Get(resp.Body)
 	maybeDie(err)
 
-	os.Stdout.WriteString(feed.Title+"\n")
-	os.Stdout.WriteString(feed.Link+"\n")
+	os.Stdout.WriteString(feed.Title + "\n")
+	os.Stdout.WriteString(feed.Link + "\n")
 	for _, i := range feed.Items {
-		os.Stdout.WriteString("\t"+strings.Replace(i.Title, "\n", " ", -1)+"\n")
-		os.Stdout.WriteString("\t\t"+i.Link+"\n")
+		os.Stdout.WriteString("\t" + strings.Replace(i.Title, "\n", " ", -1) + "\n")
+		os.Stdout.WriteString("\t\t" + i.Link + "\n")
 	}
 }
 
