@@ -66,13 +66,21 @@ func showFeed(s string) {
 	feed, err := rss.Get(resp.Body)
 	maybeDie(err)
 
+	newItems := make([]*rss.Item, 0, len(feed.Items))
+	for _, i := range feed.Items {
+		if i.When.After(begin) {
+			newItems = append(newItems, i)
+		}
+	}
+	feed.Items = newItems
+
+	if len(feed.Items) == 0 {
+		return
+	}
+
 	os.Stdout.WriteString(feed.Title + "\n")
 	os.Stdout.WriteString(feed.Link + "\n")
 	for _, i := range feed.Items {
-		if i.When.Before(begin) {
-			continue
-		}
-
 		os.Stdout.WriteString("\t" + strings.Replace(i.Title, "\n", " ", -1) + "\n")
 		os.Stdout.WriteString("\t\t" + i.Link + "\n")
 	}
