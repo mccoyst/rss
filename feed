@@ -11,4 +11,4 @@ if [ -e ~/lib/feedtime ]; then
 fi
 
 rss -f ~/lib/feeds -t "$last"
-date '+%Y-%m-%d %H:%m:%S %z %Z' > ~/lib/feedtime
+date '+%Y-%m-%d %H:%M:%S %z %Z' > ~/lib/feedtime
