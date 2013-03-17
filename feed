@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ ! -e ~/lib/feeds ]; then
+	echo No feeds file found under ~/lib
+	exit 1
+fi
+
+last=
+if [ -e ~/lib/feedtime ]; then
+	last=$(cat ~/lib/feedtime)
+fi
+
+rss -f ~/lib/feeds -t "$last"
+date '+%Y-%m-%d %H:%m:%S %z %Z' > ~/lib/feedtime
