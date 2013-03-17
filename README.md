@@ -1,6 +1,3 @@
-rss
-===
-
 Usage:
 
 	rss http://site.com/path/to/feed
