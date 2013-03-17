@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"flag"
 	"io/ioutil"
 	"net/http"
@@ -81,20 +82,20 @@ func main() {
 func getFeed(s string, fc chan *rss.Feed, ec chan error) {
 	url, err := url.Parse(s)
 	if err != nil {
-		ec <- err
+		ec <- errors.New(s + ": " + err.Error())
 		return
 	}
 
 	resp, err := http.Get(url.String())
 	if err != nil {
-		ec <- err
+		ec <- errors.New(s + ": " + err.Error())
 		return
 	}
 	defer resp.Body.Close()
 
 	feed, err := rss.Get(resp.Body)
 	if err != nil {
-		ec <- err
+		ec <- errors.New(s + ": " + err.Error())
 		return
 	}
 
