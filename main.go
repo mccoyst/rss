@@ -51,7 +51,6 @@ func main() {
 		}
 
 		showFeed(string(line))
-		os.Stdout.WriteString("\n")
 	}
 }
 
@@ -84,6 +83,7 @@ func showFeed(s string) {
 		os.Stdout.WriteString("\t" + strings.Replace(i.Title, "\n", " ", -1) + "\n")
 		os.Stdout.WriteString("\t\t" + i.Link + "\n")
 	}
+	os.Stdout.WriteString("\n")
 }
 
 func maybeDie(err error) {
