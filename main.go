@@ -8,11 +8,15 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/zippoxer/RSS-Go"
 )
 
 var feeds = flag.String("f", "", "file containing a list of feeds")
+var lastRun = flag.String("t", "", "omit items preceding this date/time, in format \"2006-01-02 15:04:05 -0700 MST\"")
+
+var begin = time.Time{}
 
 func main() {
 	flag.Parse()
@@ -20,6 +24,12 @@ func main() {
 	if flag.NArg() == 0 && *feeds == "" {
 		os.Stderr.WriteString("I need the feed URL.\n")
 		os.Exit(1)
+	}
+
+	if *lastRun != "" {
+		var err error
+		begin, err = time.Parse("2006-01-02 15:04:05 -0700 MST", *lastRun)
+		maybeDie(err)
 	}
 
 	lines := [][]byte{[]byte(flag.Arg(0))}
@@ -59,6 +69,10 @@ func showFeed(s string) {
 	os.Stdout.WriteString(feed.Title + "\n")
 	os.Stdout.WriteString(feed.Link + "\n")
 	for _, i := range feed.Items {
+		if i.When.Before(begin) {
+			continue
+		}
+
 		os.Stdout.WriteString("\t" + strings.Replace(i.Title, "\n", " ", -1) + "\n")
 		os.Stdout.WriteString("\t\t" + i.Link + "\n")
 	}
