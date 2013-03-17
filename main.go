@@ -45,16 +45,29 @@ func main() {
 		lines = bytes.Split(data, []byte{'\n'})
 	}
 
+	n := 0
+	feeds := []*rss.Feed{}
+	fc := make(chan *rss.Feed)
 	for _, line := range lines {
 		if len(line) == 0 {
 			continue
 		}
 
-		showFeed(string(line))
+		n++
+		go func(l []byte){ fc <- getFeed(string(l)) }(line)
+	}
+
+	for i := 0; i < n; i++ {
+		f := <- fc
+		feeds = append(feeds, f)
+	}
+
+	for _, f := range feeds {
+		showFeed(f)
 	}
 }
 
-func showFeed(s string) {
+func getFeed(s string) *rss.Feed {
 	url, err := url.Parse(s)
 	maybeDie(err)
 
@@ -73,6 +86,10 @@ func showFeed(s string) {
 	}
 	feed.Items = newItems
 
+	return feed
+}
+
+func showFeed(feed *rss.Feed) {
 	if len(feed.Items) == 0 {
 		return
 	}
