@@ -47,36 +47,56 @@ func main() {
 
 	n := 0
 	feeds := []*rss.Feed{}
+	errs := []error{}
 	fc := make(chan *rss.Feed)
+	ec := make(chan error)
+
 	for _, line := range lines {
 		if len(line) == 0 {
 			continue
 		}
 
 		n++
-		go func(l []byte){ fc <- getFeed(string(l)) }(line)
+		go getFeed(string(line), fc, ec)
 	}
 
 	for i := 0; i < n; i++ {
-		f := <- fc
-		feeds = append(feeds, f)
+		select {
+		case f := <- fc:
+			feeds = append(feeds, f)
+		case e := <- ec:
+			errs = append(errs, e)
+		}
 	}
 
 	for _, f := range feeds {
 		showFeed(f)
 	}
+
+	for _, e := range errs {
+		os.Stdout.WriteString("Problem: "+e.Error()+"\n")
+	}
 }
 
-func getFeed(s string) *rss.Feed {
+func getFeed(s string, fc chan *rss.Feed, ec chan error) {
 	url, err := url.Parse(s)
-	maybeDie(err)
+	if err != nil {
+		ec <- err
+		return
+	}
 
 	resp, err := http.Get(url.String())
-	maybeDie(err)
+	if err != nil {
+		ec <- err
+		return
+	}
 	defer resp.Body.Close()
 
 	feed, err := rss.Get(resp.Body)
-	maybeDie(err)
+	if err != nil {
+		ec <- err
+		return
+	}
 
 	newItems := make([]*rss.Item, 0, len(feed.Items))
 	for _, i := range feed.Items {
@@ -86,7 +106,7 @@ func getFeed(s string) *rss.Feed {
 	}
 	feed.Items = newItems
 
-	return feed
+	fc <- feed
 }
 
 func showFeed(feed *rss.Feed) {
