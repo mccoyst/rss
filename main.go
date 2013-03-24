@@ -120,7 +120,15 @@ func showFeed(feed *rss.Feed) {
 	os.Stdout.WriteString(feed.Title + "\n")
 	os.Stdout.WriteString(feed.Link + "\n")
 	for _, i := range feed.Items {
-		os.Stdout.WriteString("\t" + strings.Replace(i.Title, "\n", " ", -1) + "\n")
+		title := i.Title
+		if title == "" {
+			m := 40
+			if n := len(i.Description); n < m {
+				m = n
+			}
+			title = i.Description[:m]
+		}
+		os.Stdout.WriteString("\t" + strings.Replace(title, "\n", " ", -1) + "\n")
 		os.Stdout.WriteString("\t\t" + i.Link + "\n")
 	}
 	os.Stdout.WriteString("\n")

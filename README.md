@@ -25,5 +25,5 @@ Example output:
 
 	Homages, Ripoffs, and Coincidences
 	http://www.blogger.com/feeds/7279306243558348368/posts/default?start-index=26&max-results=25
-		
-			http://shotcontext.blogspot.com/2013/03/i-just-discovered-mike-geberts.html
+		The Hand
+			http://shotcontext.blogspot.com/2013/03/the-hand.html
