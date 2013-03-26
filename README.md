@@ -12,7 +12,7 @@ The t flag can be used to filter out old items in each feed:
 I've also provided a script, `feed`, which makes some assumptions about where feedlist and time
 info are stored so that I don't have to use those flags at all. I'm not a fan of dotfiles, so I chose
 to not force my config style on others who wanted to use `rss`. As `feed` shows, it's easy to use
-the -f and -t flags to store the info wherever one pleases.
+the f and t flags to store the info wherever one pleases.
 
 Example output:
 
