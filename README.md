@@ -4,7 +4,7 @@ Usage:
 	rss -f file
 
 The first form retrieves the summary for a single feed,
-while the second form retrieves the summaries for all feed URLs listed in a line-delimited file.
+while the second form concurrently retrieves the summaries for all feed URLs listed in a line-delimited file.
 The t flag can be used to filter out old items in each feed:
 
 	rss -f file -t '2013-03-17 14:03:49 -0400 EDT'
