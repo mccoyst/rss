@@ -35,7 +35,10 @@ func main() {
 		maybeDie(err)
 	}
 
-	lines := [][]byte{[]byte(flag.Arg(0))}
+	lines := [][]byte{}
+	if flag.NArg() > 0 {
+		lines = append(lines, []byte(flag.Arg(0)))
+	}
 
 	if *feeds != "" {
 		f, err := os.Open(*feeds)
